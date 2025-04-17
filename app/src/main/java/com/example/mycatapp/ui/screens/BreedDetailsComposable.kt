@@ -23,6 +23,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
@@ -47,6 +51,7 @@ fun BreedDetailScreen(
     BackHandler(onBack = onPressBack)
     val gson = Gson()
     val breedInfo = gson.fromJson(breed, Breed::class.java)
+    var isFavorite by remember { mutableStateOf(breedInfo.isUserFavorite) }
 
     Scaffold(
         topBar = {
@@ -74,8 +79,9 @@ fun BreedDetailScreen(
                             iconModifier = Modifier
                                 .fillMaxSize()
                                 .padding(5.dp),
-                            isFavorite = breedInfo.isUserFavorite
+                            isFavorite = isFavorite
                         ) {
+                            isFavorite = !isFavorite
                             viewModel.onFavoriteButtonClicked(breed = breedInfo)
                         }
                     }
@@ -120,6 +126,8 @@ private fun Content(breedInfo: Breed) {
     InfoLine(label = "Breed Name", value = breedInfo.name)
     Spacer(modifier = Modifier.height(8.dp))
     InfoLine(label = "Origin", value = breedInfo.origin)
+    Spacer(modifier = Modifier.height(8.dp))
+    InfoLine(label = "Life Span", value = breedInfo.lifespan)
     Spacer(modifier = Modifier.height(8.dp))
     InfoLine(label = "Temperament", value = breedInfo.temperament)
     Spacer(modifier = Modifier.height(8.dp))

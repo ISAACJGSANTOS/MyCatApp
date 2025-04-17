@@ -50,6 +50,15 @@ class CatsRepository @Inject constructor(
         }
     }
 
+    suspend fun requestFavoriteBreeds(): Flow<OperationStateResult<Array<Breed>>> {
+        return flow {
+            emit(OperationStateResult.Loading(true))
+            favoriteBreedsFlow.collect {
+                emit(OperationStateResult.Success(it.toTypedArray()))
+            }
+        }
+    }
+
     suspend fun searchBreed(searchQuery: String): Flow<OperationStateResult<Array<Breed>>> {
         return flow {
             emit(OperationStateResult.Loading(true))
@@ -62,7 +71,6 @@ class CatsRepository @Inject constructor(
 
     suspend fun saveFavoriteBreed(breed: Breed): Flow<OperationStateResult<Array<Breed>>> {
         return flow {
-            emit(OperationStateResult.Loading(true))
             try {
                 withContext(Dispatchers.IO) {
                     favoriteBreedsRepository.saveFavoriteBreed(breed.toDomainModel())
@@ -76,7 +84,6 @@ class CatsRepository @Inject constructor(
 
     suspend fun removeFavoriteBreed(breed: Breed): Flow<OperationStateResult<Array<Breed>>> {
         return flow {
-            emit(OperationStateResult.Loading(true))
             try {
                 withContext(Dispatchers.IO) {
                     favoriteBreedsRepository.deleteBreed(breedEntity = breed.toDomainModel())
@@ -88,7 +95,8 @@ class CatsRepository @Inject constructor(
         }
     }
 
-    private suspend fun processData(stateResult: OperationStateResult<Array<Breed>>
+    private suspend fun processData(
+        stateResult: OperationStateResult<Array<Breed>>
     ): Flow<OperationStateResult<Array<Breed>>> {
         return flow {
             if (stateResult is OperationStateResult.Success) {
@@ -104,6 +112,7 @@ class CatsRepository @Inject constructor(
         return Breed(
             id = this.id,
             name = this.name,
+            lifespan = this.lifespan,
             origin = this.origin,
             temperament = this.temperament,
             description = this.description,
@@ -116,6 +125,7 @@ class CatsRepository @Inject constructor(
         return BreedEntity(
             id = this.id,
             name = this.name,
+            lifespan = this.lifespan,
             origin = this.origin,
             temperament = this.temperament,
             description = this.description,

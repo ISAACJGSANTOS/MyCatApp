@@ -4,6 +4,7 @@ import com.example.database.repository.FavoriteBreedsRepository
 import com.example.mycatapp.domain.repositories.CatsRepository
 import com.example.mycatapp.domain.usecases.GetBreedsUseCase
 import com.example.mycatapp.domain.usecases.GetCatUseCases
+import com.example.mycatapp.domain.usecases.GetFavoriteBreedsUseCase
 import com.example.mycatapp.domain.usecases.RemoveFavoriteBreed
 import com.example.mycatapp.domain.usecases.SearchBreedUseCase
 import com.example.mycatapp.domain.usecases.SaveFavoriteBreedUseCase
@@ -34,12 +35,14 @@ object AppModule {
     @Singleton
     fun provideCatUseCase(
         getBreedsUseCase: GetBreedsUseCase,
+        getFavoriteBreedsUseCase: GetFavoriteBreedsUseCase,
         searchBreedUseCase: SearchBreedUseCase,
         saveFavoriteBreedUseCase: SaveFavoriteBreedUseCase,
         removeFavoriteBreed: RemoveFavoriteBreed
     ): GetCatUseCases {
         return GetCatUseCases(
             getBreedsUseCase,
+            getFavoriteBreedsUseCase,
             searchBreedUseCase,
             saveFavoriteBreedUseCase,
             removeFavoriteBreed

@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 @Composable
-fun ErrorAlertDialog(error: String) {
+fun ErrorAlertDialog(error: String, buttonAction: () -> Unit) {
     val showDialog = remember { mutableStateOf(true) }
     LaunchedEffect(error) {
         showDialog.value = true
@@ -24,6 +24,7 @@ fun ErrorAlertDialog(error: String) {
             confirmButton = {
                 Button(onClick = {
                     showDialog.value = false
+                    buttonAction()
                 }) {
                     Text("OK")
                 }

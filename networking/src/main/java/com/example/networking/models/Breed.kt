@@ -9,6 +9,8 @@ data class Breed(
     val name: String,
     @SerializedName("origin")
     var origin: String,
+    @SerializedName("life_span")
+    var lifespan: String,
     @SerializedName("temperament")
     var temperament: String,
     @SerializedName("description")
