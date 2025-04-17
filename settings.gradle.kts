@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "MyCatApp"
 include(":app")
 include(":networking")
+include(":database")

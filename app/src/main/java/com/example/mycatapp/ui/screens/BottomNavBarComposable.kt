@@ -34,14 +34,14 @@ fun BottomNavigationBar(
             },
     ) {
         NavigationBarItem(
-            selected = selectedTab == ScreenNav.SearchBreed.route,
-            onClick = { onTabSelected(ScreenNav.SearchBreed.route) },
+            selected = selectedTab == ScreenNav.SEARCH_BREED.route,
+            onClick = { onTabSelected(ScreenNav.SEARCH_BREED.route) },
             icon = { Icon(Icons.Default.Search, contentDescription = "Search Cat Breed") },
             label = { Text("Search Breed") }
         )
         NavigationBarItem(
-            selected = selectedTab == ScreenNav.FavoriteBreeds.route,
-            onClick = { onTabSelected(ScreenNav.FavoriteBreeds.route) },
+            selected = selectedTab == ScreenNav.FAVORITE_BREEDS.route,
+            onClick = { onTabSelected(ScreenNav.FAVORITE_BREEDS.route) },
             icon = { Icon(Icons.Default.Favorite, contentDescription = "Favorite Cat Breeds") },
             label = { Text("Favorite") }
         )

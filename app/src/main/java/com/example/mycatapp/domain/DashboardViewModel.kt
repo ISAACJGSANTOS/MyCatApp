@@ -2,7 +2,7 @@ package com.example.mycatapp.domain
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mycatapp.domain.repositories.model.OperationResult
+import com.example.mycatapp.domain.repositories.model.OperationStateResult
 import com.example.mycatapp.domain.usecases.GetCatUseCases
 import com.example.networking.models.Breed
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,30 +16,57 @@ class DashboardViewModel @Inject constructor(
     private val getCatUseCases: GetCatUseCases
 ) : ViewModel() {
 
-    private val _breeds = MutableStateFlow<OperationResult<Array<Breed>>>(
-        OperationResult.Loading(true)
+    private val _breedsFlow = MutableStateFlow<OperationStateResult<Array<Breed>>>(
+        OperationStateResult.Loading(true)
     )
-    val breeds: StateFlow<OperationResult<Array<Breed>>> = _breeds
+    val breedsFlow: StateFlow<OperationStateResult<Array<Breed>>> = _breedsFlow
 
     init {
         getBreeds()
     }
 
-    fun getBreeds() {
+    fun searchBreed(input: String) {
         viewModelScope.launch {
-            _breeds.value = OperationResult.Loading(true)
-            getCatUseCases.getBreedsUseCase.execute().collect { breeds ->
-                _breeds.value = breeds
+            if (input.isNotEmpty()) {
+                getCatUseCases.searchBreedUseCase.execute(input).collect { result ->
+                    _breedsFlow.value = result
+                }
+            } else {
+                getBreeds()
             }
         }
     }
 
-    fun searchBreed(input: String) {
-        _breeds.value = OperationResult.Loading(true)
+    private fun getBreeds() {
         viewModelScope.launch {
-            getCatUseCases.searchBreedUseCase.execute(input).collect { breeds ->
-                _breeds.value = breeds
+            getCatUseCases.getBreedsUseCase.execute().collect { result ->
+                _breedsFlow.value = result
             }
+
+        }
+    }
+
+    private fun saveFavoriteBreed(breed: Breed) {
+        viewModelScope.launch {
+            getCatUseCases.saveFavoriteBreedUseCase.execute(breed).collect { result ->
+                _breedsFlow.value = result
+            }
+        }
+    }
+
+    private fun removeFavoriteBreed(breed: Breed) {
+        viewModelScope.launch {
+            getCatUseCases.removeFavoriteBreed.execute(breed).collect { result ->
+                _breedsFlow.value = result
+            }
+        }
+    }
+
+    fun onFavoriteButtonClicked(breed: Breed) {
+        if (breed.isUserFavorite) {
+            removeFavoriteBreed(breed)
+        } else {
+            saveFavoriteBreed(breed)
         }
     }
 }

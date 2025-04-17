@@ -1,7 +1,7 @@
 package com.example.mycatapp.navigation
 
-sealed class ScreenNav(val route: String) {
-    data object SearchBreed : ScreenNav("searchBreed")
-    data object FavoriteBreeds : ScreenNav("favoriteBreeds")
-    data object BreedDetails : ScreenNav("breedDetails/{name}/{breed}")
+enum class ScreenNav(val route: String) {
+    SEARCH_BREED("searchBreed"),
+    FAVORITE_BREEDS("favoriteBreeds"),
+    BREED_DETAILS("breedDetails/{name}/{breed}")
 }

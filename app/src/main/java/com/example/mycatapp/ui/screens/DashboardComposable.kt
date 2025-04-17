@@ -1,6 +1,5 @@
 package com.example.mycatapp.ui.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,29 +22,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.mycatapp.domain.DashboardViewModel
-import com.example.mycatapp.domain.repositories.model.OperationResult
+import com.example.mycatapp.domain.repositories.model.OperationStateResult
 import com.example.mycatapp.navigation.ScreenNav
 import com.example.networking.models.Breed
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DashboardScreen(
+    viewModel: DashboardViewModel,
     navController: NavController,
-    isFavorite: Boolean = false,
     onTabSelected: (route: String) -> Unit,
     onItemClicked: (breed: Breed) -> Unit
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val isFavoriteTab = currentRoute == ScreenNav.FAVORITE_BREEDS.route
 
     Scaffold(
         bottomBar = {
             BottomNavigationBar(
-                selectedTab = currentRoute ?: ScreenNav.SearchBreed.route,
+                selectedTab = currentRoute ?: ScreenNav.SEARCH_BREED.route,
                 onTabSelected = { onTabSelected(it) }
             )
         }
@@ -56,20 +54,21 @@ fun DashboardScreen(
                 .padding(innerPadding)
         ) {
             DashboardContent(
-                isFavorite = isFavorite,
-                onItemClicked = onItemClicked
+                viewModel = viewModel,
+                onItemClicked = onItemClicked,
+                isFavoriteTab = isFavoriteTab
             )
         }
     }
 }
 
 @Composable
-fun DashboardContent(
-    viewModel: DashboardViewModel = hiltViewModel(),
-    isFavorite: Boolean = false,
+private fun DashboardContent(
+    viewModel: DashboardViewModel,
+    isFavoriteTab: Boolean = false,
     onItemClicked: (breed: Breed) -> Unit
 ) {
-    val breedsList by viewModel.breeds.collectAsState()
+    val breedsList by viewModel.breedsFlow.collectAsState()
     Column(
         modifier = Modifier
             .padding(15.dp)
@@ -77,26 +76,28 @@ fun DashboardContent(
     ) {
         Title()
         Spacer(modifier = Modifier.height(15.dp))
-        if (!isFavorite) SearchBar()
+        if (!isFavoriteTab) SearchBar(viewModel)
         Spacer(modifier = Modifier.height(15.dp))
 
         when (val result = breedsList) {
-            is OperationResult.Success -> {
+            is OperationStateResult.Success -> {
                 CatBreedGrid(
+                    viewModel = viewModel,
                     catBreeds = result.data,
+                    isFavoriteTab = isFavoriteTab,
                     clickAction = onItemClicked
                 )
             }
 
-            is OperationResult.Error -> {
+            is OperationStateResult.Error -> {
                 ErrorAlertDialog(error = result.message)
             }
 
-            else -> {
+            is OperationStateResult.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .wrapContentSize(Alignment.Center) // Center the progress indicator
+                        .wrapContentSize(Alignment.Center)
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier
@@ -110,7 +111,7 @@ fun DashboardContent(
 }
 
 @Composable
-fun Title() {
+private fun Title() {
     Row(
         modifier = Modifier
             .fillMaxWidth(),

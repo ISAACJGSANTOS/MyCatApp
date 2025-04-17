@@ -11,26 +11,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -39,6 +32,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.mycatapp.domain.DashboardViewModel
 import com.example.networking.models.Breed
 import com.google.gson.Gson
 
@@ -46,6 +40,7 @@ import com.google.gson.Gson
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BreedDetailScreen(
+    viewModel: DashboardViewModel,
     breed: String,
     onPressBack: () -> Unit,
 ) {
@@ -67,14 +62,23 @@ fun BreedDetailScreen(
                     },
                     navigationIcon = {
                         IconButton(onClick = onPressBack) {
-                            Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
                         }
                     },
                     actions = {
-                        FavoriteIcon(isFavorite = true) {
-                            //TODO handle action add to favorites
+                        FavoriteIcon(
+                            iconToggleButtonModifier = Modifier,
+                            iconModifier = Modifier
+                                .fillMaxSize()
+                                .padding(5.dp),
+                            isFavorite = breedInfo.isUserFavorite
+                        ) {
+                            viewModel.onFavoriteButtonClicked(breed = breedInfo)
                         }
-                    },
+                    }
                 )
             }
         }
@@ -124,7 +128,7 @@ private fun Content(breedInfo: Breed) {
 }
 
 @Composable
-fun InfoLine(label: String, value: String) {
+private fun InfoLine(label: String, value: String) {
     Text(
         buildAnnotatedString {
             withStyle(
@@ -144,25 +148,4 @@ fun InfoLine(label: String, value: String) {
             .fillMaxWidth()
             .padding(bottom = 8.dp)
     )
-}
-
-@Composable
-fun FavoriteIcon(isFavorite: Boolean, onClick: () -> Unit) {
-    var checked by remember { mutableStateOf(isFavorite) }
-    IconToggleButton(
-        checked = checked,
-        onCheckedChange = {
-            checked = it
-            onClick()
-        },
-    ) {
-        Icon(
-            Icons.Filled.Favorite,
-            contentDescription = "Favorite",
-            tint = if (checked) Color.Red else Color.Gray,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(5.dp)
-        )
-    }
 }
