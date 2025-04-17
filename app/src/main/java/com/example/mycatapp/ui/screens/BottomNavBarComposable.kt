@@ -1,8 +1,8 @@
 package com.example.mycatapp.ui.screens
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -36,7 +36,12 @@ fun BottomNavigationBar(
         NavigationBarItem(
             selected = selectedTab == ScreenNav.SEARCH_BREED.route,
             onClick = { onTabSelected(ScreenNav.SEARCH_BREED.route) },
-            icon = { Icon(Icons.Default.Search, contentDescription = "Search Cat Breed") },
+            icon = {
+                Icon(
+                    Icons.AutoMirrored.Filled.List,
+                    contentDescription = "Search Cat Breed"
+                )
+            },
             label = { Text("Search Breed") }
         )
         NavigationBarItem(

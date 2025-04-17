@@ -37,12 +37,19 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    fun getFavoriteBreeds() {
+        viewModelScope.launch {
+            getCatUseCases.getFavoriteBreedsUseCase.execute().collect { result ->
+                _breedsFlow.value = result
+            }
+        }
+    }
+
     private fun getBreeds() {
         viewModelScope.launch {
             getCatUseCases.getBreedsUseCase.execute().collect { result ->
                 _breedsFlow.value = result
             }
-
         }
     }
 

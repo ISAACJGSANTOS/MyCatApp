@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -30,18 +31,22 @@ import com.example.networking.models.Breed
 @Composable
 fun CatBreedGrid(
     viewModel: DashboardViewModel,
-    catBreeds: Array<Breed>, isFavoriteTab: Boolean, clickAction: (breed: Breed) -> Unit
+    catBreeds: Array<Breed>,
+    isFavoriteTab: Boolean,
+    clickAction: (breed: Breed) -> Unit,
+    lazyGridState: LazyGridState
 ) {
     val list = if (isFavoriteTab) catBreeds.filter { it.isUserFavorite } else catBreeds.toList()
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
+        state = lazyGridState,
         horizontalArrangement = Arrangement.spacedBy(15.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(list.count()) { catBreed ->
+        items(list.size, key = { it }) { index ->
             CatBreedItem(
                 viewModel = viewModel,
-                catBreed = catBreeds[catBreed],
+                catBreed = list[index],
                 clickAction = clickAction
             )
         }
@@ -78,7 +83,9 @@ private fun CatBreedItem(
             }
             FavoriteIcon(
                 iconToggleButtonModifier = Modifier.align(Alignment.TopEnd),
-                iconModifier = Modifier.padding(8.dp).size(24.dp),
+                iconModifier = Modifier
+                    .padding(8.dp)
+                    .size(24.dp),
                 isFavorite = catBreed.isUserFavorite,
             ) {
                 viewModel.onFavoriteButtonClicked(breed = catBreed)
@@ -97,4 +104,3 @@ private fun CatBreedItem(
         )
     }
 }
-

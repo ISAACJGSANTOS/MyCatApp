@@ -5,10 +5,6 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
@@ -19,19 +15,15 @@ fun FavoriteIcon(
     isFavorite: Boolean,
     onClick: () -> Unit
 ) {
-    var checked by remember { mutableStateOf(isFavorite) }
     IconToggleButton(
-        checked = checked,
-        onCheckedChange = {
-            checked = it
-            onClick()
-        },
+        checked = isFavorite,
+        onCheckedChange = { onClick() },
         modifier = iconToggleButtonModifier
     ) {
         Icon(
             Icons.Filled.Favorite,
             contentDescription = "Favorite",
-            tint = if (checked) Color.Red else Color.Gray,
+            tint = if (isFavorite) Color.Red else Color.Gray,
             modifier = iconModifier
         )
     }

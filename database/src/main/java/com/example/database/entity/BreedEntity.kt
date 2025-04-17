@@ -13,6 +13,8 @@ class BreedEntity(
     val name: String,
     @ColumnInfo(name = "origin")
     var origin: String,
+    @ColumnInfo(name = "life_span")
+    var lifespan: String,
     @ColumnInfo(name = "temperament")
     var temperament: String,
     @ColumnInfo(name = "description")
