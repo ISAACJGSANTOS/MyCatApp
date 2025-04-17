@@ -22,12 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.mycatapp.domain.DashboardViewModel
 
 @Composable
 fun SearchBar(
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel
 ) {
     var searchText by remember { mutableStateOf("") }
     val placeholder = "Search Breed..."
@@ -50,13 +49,7 @@ fun SearchBar(
             },
             trailingIcon = {
                 IconButton(
-                    onClick = {
-                        if (searchText.isEmpty()) {
-                            viewModel.getBreeds()
-                        } else {
-                            viewModel.searchBreed(searchText)
-                        }
-                    }
+                    onClick = { viewModel.searchBreed(input = searchText) }
                 ) {
                     Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
                 }

@@ -12,44 +12,48 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.mycatapp.domain.DashboardViewModel
 import com.example.networking.models.Breed
 
 @Composable
-fun CatBreedGrid(catBreeds: Array<Breed>, clickAction: (breed: Breed) -> Unit) {
+fun CatBreedGrid(
+    viewModel: DashboardViewModel,
+    catBreeds: Array<Breed>, isFavoriteTab: Boolean, clickAction: (breed: Breed) -> Unit
+) {
+    val list = if (isFavoriteTab) catBreeds.filter { it.isUserFavorite } else catBreeds.toList()
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(15.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(catBreeds.count()) { catBreed ->
-            CatBreedItem(catBreed = catBreeds[catBreed], clickAction)
+        items(list.count()) { catBreed ->
+            CatBreedItem(
+                viewModel = viewModel,
+                catBreed = catBreeds[catBreed],
+                clickAction = clickAction
+            )
         }
     }
 }
 
 @Composable
-fun CatBreedItem(catBreed: Breed, clickAction: (breed: Breed) -> Unit) {
+private fun CatBreedItem(
+    viewModel: DashboardViewModel,
+    catBreed: Breed,
+    clickAction: (breed: Breed) -> Unit
+) {
     Card(
         modifier = Modifier
             .padding(5.dp)
@@ -73,12 +77,14 @@ fun CatBreedItem(catBreed: Breed, clickAction: (breed: Breed) -> Unit) {
                 )
             }
             FavoriteIcon(
-                modifier = Modifier.align(Alignment.TopEnd),
-                isFavorite = true
+                iconToggleButtonModifier = Modifier.align(Alignment.TopEnd),
+                iconModifier = Modifier.padding(8.dp).size(24.dp),
+                isFavorite = catBreed.isUserFavorite,
             ) {
-                //TODO: Handle click to add breed to favorites
+                viewModel.onFavoriteButtonClicked(breed = catBreed)
             }
         }
+
         Text(
             text = catBreed.name,
             maxLines = 2,
@@ -92,24 +98,3 @@ fun CatBreedItem(catBreed: Breed, clickAction: (breed: Breed) -> Unit) {
     }
 }
 
-@Composable
-fun FavoriteIcon(modifier: Modifier = Modifier, isFavorite: Boolean, onClick: () -> Unit) {
-    var checked by remember { mutableStateOf(isFavorite) }
-    IconToggleButton(
-        checked = checked,
-        onCheckedChange = {
-            checked = it
-            onClick()
-        },
-        modifier = modifier
-    ) {
-        Icon(
-            Icons.Filled.Favorite,
-            contentDescription = "Favorite",
-            tint = if (checked) Color.Red else Color.Gray,
-            modifier = Modifier
-                .padding(8.dp)
-                .size(24.dp)
-        )
-    }
-}
