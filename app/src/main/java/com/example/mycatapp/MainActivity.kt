@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyCatAppTheme {
                 val navController = rememberNavController()
-                NavGraph(navController)
+                NavGraph(navController, null)
             }
         }
     }
@@ -28,6 +28,6 @@ class MainActivity : ComponentActivity() {
 fun GreetingPreview() {
     MyCatAppTheme {
         val navController = rememberNavController()
-        NavGraph(navController)
+        NavGraph(navController, null)
     }
 }

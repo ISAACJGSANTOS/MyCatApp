@@ -47,6 +47,9 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
+            excludes += "META-INF/DEPENDENCIES"
         }
     }
 }
@@ -65,6 +68,7 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.hilt.android.v2511)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.navigation.testing)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     kapt(libs.hilt.compiler)
@@ -74,6 +78,16 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.kotlinx.serialization.json)
+
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk.mockk)
+    testImplementation(libs.slf4j.simple)
+
+    androidTestImplementation(libs.androidx.espresso.core.v361)
+    androidTestImplementation(libs.androidx.espresso.intents)
+    testImplementation(libs.mockk.v1132)
+    androidTestImplementation(libs.mockk.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

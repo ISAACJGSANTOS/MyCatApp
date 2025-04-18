@@ -1,6 +1,7 @@
 package com.example.mycatapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -12,20 +13,21 @@ import com.example.mycatapp.ui.screens.BreedDetailScreen
 import com.example.mycatapp.ui.screens.DashboardScreen
 import com.example.networking.models.Breed
 import com.google.gson.Gson
-import androidx.hilt.navigation.compose.hiltViewModel
+import java.net.URLEncoder
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel?
 ) {
+    val dashboardViewModel = viewModel ?: hiltViewModel()
     NavHost(
         navController = navController,
         startDestination = ScreenNav.SEARCH_BREED.route
     ) {
         composable(ScreenNav.SEARCH_BREED.route) {
             DashboardScreen(
-                viewModel = viewModel,
+                viewModel = dashboardViewModel,
                 navController = navController,
                 onTabSelected = { navigateToTab(navController, it) },
                 onItemClicked = { navigateToBreedDetails(navController, it) }
@@ -34,7 +36,7 @@ fun NavGraph(
 
         composable(ScreenNav.FAVORITE_BREEDS.route) {
             DashboardScreen(
-                viewModel = viewModel,
+                viewModel = dashboardViewModel,
                 navController = navController,
                 onTabSelected = { navigateToTab(navController, it) },
                 onItemClicked = { navigateToBreedDetails(navController, it) }
@@ -50,7 +52,7 @@ fun NavGraph(
             )
         ) { backStackEntry ->
             BreedDetailScreen(
-                viewModel = viewModel,
+                viewModel = dashboardViewModel,
                 breed = backStackEntry.arguments?.getString("breed") ?: ""
             ) {
                 navController.popBackStack()
@@ -61,7 +63,8 @@ fun NavGraph(
 
 private fun navigateToBreedDetails(navController: NavController, breed: Breed) {
     val json = Gson().toJson(breed, Breed::class.java)
-    val route = ScreenNav.BREED_DETAILS.route.replace("{breed}", json)
+    val encodedJson = URLEncoder.encode(json, "UTF-8")
+    val route = ScreenNav.BREED_DETAILS.route.replace("{breed}", encodedJson)
     navController.navigate(route)
 }
 

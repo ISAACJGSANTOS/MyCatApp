@@ -55,12 +55,14 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    // Retrofit
+
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.kotlinx.serialization.json)
-    // Okhttp
+
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+
+    testImplementation(libs.mockwebserver)
 }

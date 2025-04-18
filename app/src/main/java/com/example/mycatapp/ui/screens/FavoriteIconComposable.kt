@@ -7,6 +7,7 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun FavoriteIcon(
@@ -24,7 +25,7 @@ fun FavoriteIcon(
             Icons.Filled.Favorite,
             contentDescription = "Favorite",
             tint = if (isFavorite) Color.Red else Color.Gray,
-            modifier = iconModifier
+            modifier = iconModifier.testTag("Favorite")
         )
     }
 }
