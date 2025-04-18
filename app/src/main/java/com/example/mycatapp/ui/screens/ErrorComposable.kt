@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun ErrorAlertDialog(error: String, buttonAction: () -> Unit) {
@@ -16,6 +18,7 @@ fun ErrorAlertDialog(error: String, buttonAction: () -> Unit) {
     }
     if (showDialog.value) {
         AlertDialog(
+            modifier = Modifier.testTag("ErrorAlertDialog"),
             onDismissRequest = {
                 showDialog.value = false
             },

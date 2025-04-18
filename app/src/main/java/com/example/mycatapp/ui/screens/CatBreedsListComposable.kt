@@ -29,24 +29,27 @@ import com.example.mycatapp.domain.DashboardViewModel
 import com.example.networking.models.Breed
 
 @Composable
-fun CatBreedGrid(
+fun CatBreedsListGrid(
     viewModel: DashboardViewModel,
     catBreeds: Array<Breed>,
-    isFavoriteTab: Boolean,
     clickAction: (breed: Breed) -> Unit,
     lazyGridState: LazyGridState
 ) {
-    val list = if (isFavoriteTab) catBreeds.filter { it.isUserFavorite } else catBreeds.toList()
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         state = lazyGridState,
         horizontalArrangement = Arrangement.spacedBy(15.dp),
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        items(list.size, key = { it }) { index ->
+        items(
+            count = catBreeds.size,
+            key = { index -> catBreeds[index].id },
+            contentType = { "breedItem" }
+
+        ) { index ->
             CatBreedItem(
                 viewModel = viewModel,
-                catBreed = list[index],
+                catBreed = catBreeds[index],
                 clickAction = clickAction
             )
         }

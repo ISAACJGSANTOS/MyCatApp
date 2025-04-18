@@ -76,6 +76,7 @@ private fun DashboardContent(
     isFavoriteTab: Boolean = false,
     onItemClicked: (breed: Breed) -> Unit
 ) {
+    val breedsList by viewModel.breedsFlow.collectAsState()
     val lazyGridState = rememberLazyGridState()
     var isSearchBarVisible by remember { mutableStateOf(true) }
 
@@ -85,7 +86,7 @@ private fun DashboardContent(
                 isSearchBarVisible = scrollOffset == 0
             }
     }
-    val breedsList by viewModel.breedsFlow.collectAsState()
+
     Column(
         modifier = Modifier
             .padding(15.dp)
@@ -102,10 +103,10 @@ private fun DashboardContent(
 
         when (val result = breedsList) {
             is OperationStateResult.Success -> {
-                CatBreedGrid(
+
+                CatBreedsListGrid(
                     viewModel = viewModel,
-                    catBreeds = result.data,
-                    isFavoriteTab = isFavoriteTab,
+                    catBreeds = filterList(isFavoriteTab, result),
                     clickAction = onItemClicked,
                     lazyGridState = lazyGridState
                 )
@@ -149,4 +150,16 @@ private fun Title() {
             fontSize = 25.sp,
         )
     }
+}
+
+private fun filterList(
+    isFavoriteTab: Boolean,
+    operationStateResult: OperationStateResult.Success<Array<Breed>>
+): Array<Breed> {
+    val list = if (isFavoriteTab) {
+        operationStateResult.data.filter { it.isUserFavorite }
+    } else {
+        operationStateResult.data.toList()
+    }
+    return list.toTypedArray()
 }
