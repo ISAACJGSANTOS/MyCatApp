@@ -63,7 +63,7 @@ fun NavGraph(
 
 private fun navigateToBreedDetails(navController: NavController, breed: Breed) {
     val json = Gson().toJson(breed, Breed::class.java)
-    val encodedJson = URLEncoder.encode(json, "UTF-8")
+    val encodedJson = URLEncoder.encode(json, "UTF-8").replace("+", "%20")
     val route = ScreenNav.BREED_DETAILS.route.replace("{breed}", encodedJson)
     navController.navigate(route)
 }
